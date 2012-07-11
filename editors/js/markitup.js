@@ -29,4 +29,18 @@ Drupal.wysiwyg.editor.detach.markitup = function (context, params, trigger) {
   }
 };
 
+Drupal.wysiwyg.editor.instance.markitup = {
+  insert: function (content) {
+    $.markItUp({ replaceWith: content });
+  },
+
+  setContent: function (content) {
+    $('#' + this.field).val(content);
+  },
+
+  getContent: function () {
+    return $('#' + this.field).val();
+  }
+};
+
 })(jQuery);

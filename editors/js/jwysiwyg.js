@@ -26,4 +26,18 @@ Drupal.wysiwyg.editor.detach.jwysiwyg = function (context, params, trigger) {
   }
 };
 
+Drupal.wysiwyg.editor.instance.jwysiwyg = {
+  insert: function (content) {
+    $('#' + this.field).wysiwyg('insertHtml', content);
+  },
+
+  setContent: function (content) {
+    $('#' + this.field).wysiwyg('setContent', content);
+  },
+
+  getContent: function () {
+    return $('#' + this.field).wysiwyg('getContent');
+  }
+};
+
 })(jQuery);
