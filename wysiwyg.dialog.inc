@@ -166,7 +166,7 @@ function wysiwyg_render_dialog_page($page) {
  * @see template_preprocess_page()
  */
 function template_preprocess_wysiwyg_dialog_page(&$variables) {
-  template_preprocess_page(&$variables);
+  template_preprocess_page($variables);
 }
 
 
@@ -178,6 +178,6 @@ function template_preprocess_wysiwyg_dialog_page(&$variables) {
  * @see template_process_page()
  */
 function template_process_wysiwyg_dialog_page(&$variables) {
-  template_process_page(&$variables);
+  template_process_page($variables);
 }
 
