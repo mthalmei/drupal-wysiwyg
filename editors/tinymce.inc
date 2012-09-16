@@ -191,7 +191,7 @@ function wysiwyg_tinymce_settings($editor, $config, $theme) {
       $settings['content_css'] = implode(',', wysiwyg_get_css());
     }
     elseif ($config['css_setting'] == 'self' && isset($config['css_path'])) {
-      $settings['content_css'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => path_to_theme()));
+      $settings['content_css'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => drupal_get_path('theme', variable_get('theme_default', NULL))));
     }
   }
 

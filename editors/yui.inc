@@ -211,7 +211,7 @@ function wysiwyg_yui_settings($editor, $config, $theme) {
       $settings['extracss'] = wysiwyg_get_css();
     }
     elseif ($config['css_setting'] == 'self' && isset($config['css_path'])) {
-      $settings['extracss'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => path_to_theme()));
+      $settings['extracss'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => drupal_get_path('theme', variable_get('theme_default', NULL))));
       $settings['extracss'] = explode(',', $settings['extracss']);
     }
     // YUI only supports inline CSS, so we need to use @import directives.
