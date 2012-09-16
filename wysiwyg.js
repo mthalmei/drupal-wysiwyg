@@ -273,4 +273,9 @@ Drupal.wysiwyg.getParams = function(element, params) {
  */
 Drupal.wysiwygInit();
 
+// Respond to CTools detach behaviors event.
+$(document).bind('CToolsDetachBehaviors', function(event, context) {
+  Drupal.behaviors.attachWysiwyg.detach(context, {}, 'unload');
+});
+
 })(jQuery);
