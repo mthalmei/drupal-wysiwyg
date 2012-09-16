@@ -119,7 +119,7 @@ function wysiwyg_profile_form($form, &$form_state, $profile) {
     '#theme' => 'wysiwyg_admin_button_table',
   );
 
-  $plugins = wysiwyg_get_plugins($profile->editor);
+  $plugins = wysiwyg_get_plugins($profile->editor, TRUE);
   // Generate the button list.
   foreach ($plugins as $name => $meta) {
     if (isset($meta['buttons']) && is_array($meta['buttons'])) {
@@ -397,7 +397,7 @@ function wysiwyg_profile_overview($form, &$form_state) {
   include_once './includes/install.inc';
 
   // Check which wysiwyg editors are installed.
-  $editors = wysiwyg_get_all_editors();
+  $editors = wysiwyg_get_all_editors(TRUE);
   $count = count($editors);
   $status = array();
   $options = array('' => t('No editor'));
