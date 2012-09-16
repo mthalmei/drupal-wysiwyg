@@ -1,6 +1,10 @@
 (function($) {
 
 Drupal.wysiwyg.editor.init.ckeditor = function(settings) {
+  // CKEditor loses its base path info in case of Ajax.
+  window.CKEDITOR_BASEPATH = settings.global.editorBasePath + '/';
+  CKEDITOR.basePath = window.CKEDITOR_BASEPATH;
+
   // Plugins must only be loaded once. Only the settings from the first format
   // will be used but they're identical anyway.
   var registeredPlugins = {};

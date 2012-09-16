@@ -171,6 +171,7 @@ function wysiwyg_ckeditor_settings_form_validate_css_classes($element, &$form_st
 function wysiwyg_ckeditor_settings($editor, $config, $theme) {
   $settings = array(
     'baseHref' => $GLOBALS['base_url'] . '/',
+    'global_basepath_var' => 'CKEDITOR_BASEPATH',
     'width' => 'auto',
     // For better compatibility with smaller textareas.
     'resize_minWidth' => 450,

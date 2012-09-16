@@ -11,6 +11,17 @@ Drupal.wysiwygInit = function() {
   if (/KDE/.test(navigator.vendor)) {
     return;
   }
+  // See if the current editor requires a global basepath variable
+  // to be set before loading.
+  if (Drupal.settings.wysiwyg) {
+    $.each(Drupal.settings.wysiwyg.configs, function(editor_index, editor_value) {
+      $.each(editor_value, function(format_index, format_value){
+        if (format_value.global_basepath_var) {
+          window[format_value.global_basepath_var] = Drupal.settings.wysiwyg.configs[editor_index].global.editorBasePath + '/';
+        }
+      });
+    });
+  }
 
   jQuery.each(Drupal.wysiwyg.editor.init, function(editor) {
     // Clone, so original settings are not overwritten.
@@ -160,6 +171,10 @@ Drupal.wysiwygAttach = function(context, params) {
  * @see Drupal.detachBehaviors
  */
 Drupal.wysiwygDetach = function (context, params, trigger) {
+  // Do not attempt to detach an unknown editor instance (Ajax).
+  if (typeof Drupal.wysiwyg.instances[params.field] == 'undefined') {
+    return;
+  }
   trigger = trigger || 'unload';
   var editor = Drupal.wysiwyg.instances[params.field].editor;
   if (jQuery.isFunction(Drupal.wysiwyg.editor.detach[editor])) {
