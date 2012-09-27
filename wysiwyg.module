@@ -569,13 +569,11 @@ function wysiwyg_get_editor_themes(&$profile, $selected_theme = NULL) {
  *
  * @param $editor_name
  *   The internal name of an editor to return plugins for.
- * @param $reset
- *   Internal use; reset cached list of plugins.
  *
  * @return
  *   An array for each plugin.
  */
-function wysiwyg_get_plugins($editor_name, $reset = FALSE) {
+function wysiwyg_get_plugins($editor_name) {
   $plugins = array();
   if (!empty($editor_name)) {
     $editor = wysiwyg_get_editor($editor_name);
@@ -590,7 +588,7 @@ function wysiwyg_get_plugins($editor_name, $reset = FALSE) {
     if (isset($editor['proxy plugin'])) {
       $plugins += $editor['proxy plugin'];
       $proxy = key($editor['proxy plugin']);
-      foreach (wysiwyg_get_all_plugins($reset) as $plugin_name => $info) {
+      foreach (wysiwyg_get_all_plugins() as $plugin_name => $info) {
         $plugins[$proxy]['buttons'][$plugin_name] = $info['title'];
       }
     }
@@ -810,18 +808,15 @@ function wysiwyg_get_editor($name) {
 
 /**
  * Compile a list holding all supported editors including installed editor version information.
- *
- * @param $reset
- *   Internal use; reset cached list of editors.
  */
-function wysiwyg_get_all_editors($reset = FALSE) {
+function wysiwyg_get_all_editors() {
   static $editors;
 
-  if (isset($editors) && !$reset) {
+  if (isset($editors)) {
     return $editors;
   }
 
-  $editors = wysiwyg_load_includes('editors', 'editor', NULL, $reset);
+  $editors = wysiwyg_load_includes('editors', 'editor');
   foreach ($editors as $editor => $properties) {
     // Fill in required properties.
     $editors[$editor] += array(
@@ -876,18 +871,15 @@ function wysiwyg_get_all_editors($reset = FALSE) {
 
 /**
  * Invoke hook_wysiwyg_plugin() in all modules.
- *
- * @param $reset
- *   Internal use; reset cached list of plugins.
  */
-function wysiwyg_get_all_plugins($reset = FALSE) {
+function wysiwyg_get_all_plugins() {
   static $plugins;
 
-  if (isset($plugins) && !$reset) {
+  if (isset($plugins)) {
     return $plugins;
   }
 
-  $plugins = wysiwyg_load_includes('plugins', 'plugin', NULL, $reset);
+  $plugins = wysiwyg_load_includes('plugins', 'plugin');
   foreach ($plugins as $name => $properties) {
     $plugin = &$plugins[$name];
     // Fill in required/default properties.
@@ -926,42 +918,28 @@ function wysiwyg_get_all_plugins($reset = FALSE) {
  *   The hook name to invoke.
  * @param $file
  *   An optional include file name without .inc extension to limit the search to.
- * @param $reset
- *   Internal use; reset cached file listings.
  *
  * @see wysiwyg_get_directories(), _wysiwyg_process_include()
  */
-function wysiwyg_load_includes($type = 'editors', $hook = 'editor', $file = NULL, $reset = FALSE) {
-  $cid = "wysiwyg_load_includes:$type:$file";
-  if (!$reset && $cached = cache_get($cid)) {
-    $info = $cached->data;
-
-    // Load include files.
-    foreach ($info as $data) {
-      include_once './' . $data['path'] . '/' . $data['name'] . '.inc';
-    }
+function wysiwyg_load_includes($type = 'editors', $hook = 'editor', $file = NULL) {
+  // Determine implementations.
+  $directories = wysiwyg_get_directories($type);
+  $directories['wysiwyg'] = drupal_get_path('module', 'wysiwyg') . '/' . $type;
+  $file_list = array();
+  foreach ($directories as $module => $path) {
+    $file_list[$module] = drupal_system_listing("/{$file}.inc\$/", $path, 'name', 0);
   }
-  else {
-    // Determine implementations.
-    $directories = wysiwyg_get_directories($type);
-    $directories['wysiwyg'] = drupal_get_path('module', 'wysiwyg') . '/' . $type;
-    $file_list = array();
-    foreach ($directories as $module => $path) {
-      $file_list[$module] = drupal_system_listing("/{$file}.inc\$/", $path, 'name', 0);
-    }
 
-    // Load implementations.
-    $info = array();
-    foreach (array_filter($file_list) as $module => $files) {
-      foreach ($files as $file) {
-        include_once './' . $file->uri;
-        $result = _wysiwyg_process_include($module, $module . '_' . $file->name, dirname($file->uri), $hook);
-        if (is_array($result)) {
-          $info = array_merge($info, $result);
-        }
+  // Load implementations.
+  $info = array();
+  foreach (array_filter($file_list) as $module => $files) {
+    foreach ($files as $file) {
+      include_once './' . $file->uri;
+      $result = _wysiwyg_process_include($module, $module . '_' . $file->name, dirname($file->uri), $hook);
+      if (is_array($result)) {
+        $info = array_merge($info, $result);
       }
     }
-    cache_set($cid, $info);
   }
   return $info;
 }
