@@ -399,6 +399,14 @@ function wysiwyg_profile_overview($form, &$form_state) {
 
   // Check which wysiwyg editors are installed.
   $editors = wysiwyg_get_all_editors();
+
+  // Sort editors by installed first, then by title.
+  foreach ($editors as $key => $row) {
+    $installed[$key] = $row['installed'];
+    $title[$key] = drupal_strtolower($row['title']);
+  }
+  array_multisort($installed, SORT_DESC, $title, SORT_ASC, $editors);
+
   $count = count($editors);
   $status = array();
   $options = array('' => t('No editor'));
