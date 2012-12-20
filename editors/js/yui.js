@@ -12,8 +12,8 @@ Drupal.wysiwyg.editor.attach.yui = function(context, params, settings) {
 
   // Load plugins stylesheet.
   if (Drupal.settings.wysiwyg.plugins[params.format]) {
-    for (var plugin in drupal.settings.wysiwyg.plugins[params.format].drupal) {
-      settings.extracss += settings.extracss+' @import "'+drupal.settings.wysiwyg.plugins[params.format].drupal[plugin].css+'"; ';
+    for (var plugin in Drupal.settings.wysiwyg.plugins[params.format].drupal) {
+      settings.extracss += settings.extracss+' @import "'+Drupal.settings.wysiwyg.plugins[params.format].drupal[plugin].css+'"; ';
     }
   }
 
@@ -139,7 +139,7 @@ Drupal.wysiwyg.editor.instance.yui = {
   },
 
   insert: function (content) {
-    YAHOO.widget.EditorInfo.getEditorById(this.field).cmd_inserthtml(content);
+    YAHOO.widget.EditorInfo.getEditorById(this.field).execCommand('inserthtml', content);
   },
 
   setContent: function (content) {
