@@ -236,7 +236,8 @@ function wysiwyg_ckeditor_settings($editor, $config, $theme) {
     // Versions below 3.0.1 could only handle one stylesheet.
     if (version_compare($editor['installed version'], '3.0.1.4391', '<')) {
       if ($config['css_setting'] == 'theme') {
-        $settings['contentsCss'] = reset(wysiwyg_get_css());
+        $css = wysiwyg_get_css();
+        $settings['contentsCss'] = reset($css);
       }
       elseif ($config['css_setting'] == 'self' && isset($config['css_path'])) {
         $settings['contentsCss'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => drupal_get_path('theme', variable_get('theme_default', NULL))));
